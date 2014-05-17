@@ -1,0 +1,17 @@
+{
+  "name": "CordovaLab",
+  "version": "0.0.0",
+  "authors": [
+    "chunchill <chunchill@163.com>"
+  ],
+  "description": "Cordova lab",
+  "main": "index.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

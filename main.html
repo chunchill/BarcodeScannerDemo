@@ -1,0 +1,101 @@
+<html>
+<head>
+    <title>Test</title>
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="bower_components/knockout.js/knockout.js"></script>
+    <script type="text/javascript" src="bower_components/cordova/debug/cordova.android-debug.js"></script>
+    <style>
+    body { font-family: arial; font-size: 14px; }
+    .liveExample { padding: 1em; background-color: #EEEEDD; border: 1px solid #CCC; max-width: 655px; }
+    .liveExample input { font-family: Arial; }
+    .liveExample b { font-weight: bold; }
+    .liveExample p { margin-top: 0.9em; margin-bottom: 0.9em; }
+    .liveExample select[multiple] { width: 100%; height: 8em; }
+    .liveExample h2 { margin-top: 0.4em; font-weight: bold; font-size: 1.2em; }
+    </style>
+</head>
+<body>
+    <div class='liveExample'>   
+     <h1>Simple test</h1>
+     <p>Jquery Event: <input id="testIt" name="testIt" /><button id="btnTest">Test it</button></p> 
+     <p>First name: <input data-bind='value: firstName' /></p> 
+     <p>Last name: <input data-bind='value: lastName' /></p> 
+     <h2>Hello, <span data-bind='text: fullName'> </span>!</h2>  
+     <h1>Cordova Test</h1>
+     <input name="jqueryTestValue" id="jqueryTestValue" data-bind='value:result'></input><button id="btnJqueryScan">Scan</button>
+     <input name="koTestValue" id="koTestValue"></input><button data-bind='click:btnKoScan' >Scan</button>
+	 Test Binding Result:<span data-bind="text:result"></span>
+	 <br>
+	  <button id='btnConfirm' name='btnConfirm'>KO-Confirm</button>
+	 <button data-bind='click:confirm'>KO-Confirm</button>
+	
+ </div>
+ <script type="text/javascript">
+
+ function startScan() {
+    alert(cordova.plugins.barcodeScanner);
+    cordova.plugins.barcodeScanner.scan(
+        function (result) {
+            alert('here');
+            $("#jqueryTestValue").val(result.text);
+        }, 
+        function (error) {
+            alert("Scanning failed: " + error);
+        }
+        );
+}
+
+$(function(){
+$("#btnConfirm").on('click',function(){
+   var temp=$("#jqueryTestValue").val();
+   alert(temp);
+});
+   $("#btnTest").on('click',function(){
+      $("#testIt").val("Yes");
+  })
+
+   $("#btnJqueryScan").on('click',function(){
+      alert('jquery');
+      try{
+		 startScan();
+	   }
+	   catch(err)
+	   {
+	     alert(err.stack||err.stacktrace);
+	     alert(err.description);
+	   }
+  })
+})
+
+
+// Here's my data model
+var ViewModel = function(first, last) {
+    this.firstName = ko.observable(first);
+    this.lastName = ko.observable(last);
+    this.result=ko.observable('123');
+    this.fullName = ko.computed(function() {
+        // Knockout tracks dependencies automatically. It knows that fullName depends on firstName and lastName, because these get called when evaluating fullName.
+        return this.firstName() + " " + this.lastName();
+    }, this);
+    this.confirm=function(){
+	 var temp=$("#jqueryTestValue").val();
+     alert(temp);
+	 this.result(temp);
+	};
+    this.btnKoScan=function(){
+    	//$("#koTestValue").val('scan with ko')
+		alert('ko');
+		try{
+		 startScan();
+	   }
+	   catch(err)
+	   {
+	     alert(err.description);
+	   }
+    }
+};
+
+ko.applyBindings(new ViewModel("Planet", "Earth")); // This makes Knockout get to work
+</script>
+</body>
+</html>
